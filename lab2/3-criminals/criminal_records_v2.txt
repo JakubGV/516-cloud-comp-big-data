@@ -1,0 +1,16 @@
+Aadam 7/2/2001 Pittsburgh Carmen alcohol
+Aiden 11/18/2001 Minneapolis Hanna,Holly drugs
+Aiden 5/27/2002 Rochester Tristan fighting
+Cain 9/7/2011 Camden Luis,Lucas robbery
+Cain 11/8/2015 Newark Luis,Lucas robbery
+Cain 1/13/2016 Brunswick Luis,Lucas robbery
+Calvin 11/23/2001 Pueblo Holly cheating
+Eden 4/6/2003 Trenton Jake cheating
+Eden 8/29/2003 Manhattan Holly shoplifting
+Eden 9/13/2004 Philadelphia Charlie shoplifting
+Eden 11/19/2004 Boston Holly shoplifting
+Eden 7/11/2005 Cambridge Charlie vandalism
+Jessie 8/9/2008 Columbus NULL
+Jessie 7/10/2009 Columbus NULL
+Leon 9/19/2016 Pueblo Calvin,Abby,Brendan shoplifting
+Yasmin 10/26/2010 Vernon NULL drugs
