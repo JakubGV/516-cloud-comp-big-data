@@ -1,5 +1,5 @@
 import multiprocessing as mp
-
+import operator
 FILENAME = 'simple.txt'
 NUM_WORKERS = 8
 
@@ -70,6 +70,7 @@ if __name__ == '__main__':
         else:
             reduce_in[key] = [val]
 
+
     processes = []
     for key in reduce_in:
         p = mp.Process(target=reduce_add, args=(q, (key, reduce_in[key])))
@@ -83,4 +84,8 @@ if __name__ == '__main__':
     while not q.empty():
         counts.append(q.get())
 
-    print(counts)
+    # print(counts)
+
+    getcount = operator.itemgetter(1)
+    sorted_counts = dict(sorted(counts, key=getcount, reverse=True))
+    print(sorted)
