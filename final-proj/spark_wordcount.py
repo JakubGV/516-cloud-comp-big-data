@@ -1,7 +1,10 @@
 from pyspark.sql import SparkSession
 from operator import add
+import time
 
 FILENAME = 'pride_prej.txt'
+
+start = time.time()
 
 spark = SparkSession \
     .builder \
@@ -23,3 +26,6 @@ counts_desc = counts.sortBy(lambda x: x[1], ascending=False)
 # Collect and print top 5 most frequent
 r = counts_desc.take(5)
 print(r)
+
+# Computation time
+print(time.time() - start)
