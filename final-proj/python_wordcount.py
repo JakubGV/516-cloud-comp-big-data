@@ -86,7 +86,9 @@ if __name__ == '__main__':
             p.start()
             processes.append(p)
             index += 1
-        
+            if index >= len(reduce_in):
+                break
+
         for p in processes:
             p.join()
 
