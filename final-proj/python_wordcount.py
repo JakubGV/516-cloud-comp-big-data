@@ -1,6 +1,9 @@
 import multiprocessing as mp
-import operator
-FILENAME = 'simple.txt'
+import heapq
+from heapq import heappop, heappush
+import time
+
+FILENAME = 'pride_prej.txt'
 NUM_WORKERS = 8
 
 def run_parallel_map(func, N, data) -> list:
@@ -9,7 +12,7 @@ def run_parallel_map(func, N, data) -> list:
         start = (int) (N / NUM_WORKERS * i)
         stop = (int) (N / NUM_WORKERS * (i+1))
 
-        p = mp.Process(target=func, args=(q, data, start, stop))
+        p = mp.Process(target=func, args=(q, data, start, stop), daemon=True)
         p.start()
         processes.append(p)
 
@@ -23,7 +26,7 @@ def run_parallel_map(func, N, data) -> list:
     return data
 
 def textFile(name) -> list:
-    with open('./' + name) as f:
+    with open('./' + name, encoding='utf-8-sig') as f:
         return [w.strip() for w in f.readlines()]
 
 def flatMap(q, lines, start, stop):
@@ -35,7 +38,7 @@ def flatMap(q, lines, start, stop):
 
 def reduce_add(q, pair):
     vals = pair[1]
-    result = sum(vals)
+    result = len(vals)
 
     q.put( (pair[0], result) )
 
@@ -47,8 +50,9 @@ def map_cnt(q, words, start, stop):
     q.put(pairs)
 
 if __name__ == '__main__':
-    q = mp.Queue() # atomic data structure
-    
+    q = mp.Manager().Queue() # atomic data structure
+    start = time.time()
+
     # Read file
     lines = textFile(FILENAME)
 
@@ -60,7 +64,7 @@ if __name__ == '__main__':
     N = len(words)
     pairs = run_parallel_map(map_cnt, N, words)
 
-    # Reduce, start a process for each (k, [v])
+    # Reduce (word,count), start a process for each (k, [v])
     reduce_in = {}
     for pair in pairs:
         key = pair[0]
@@ -69,23 +73,33 @@ if __name__ == '__main__':
             reduce_in[key].append(val)
         else:
             reduce_in[key] = [val]
-
+    reduce_in = list(reduce_in.items())
 
     processes = []
-    for key in reduce_in:
-        p = mp.Process(target=reduce_add, args=(q, (key, reduce_in[key])))
-        p.start()
-        processes.append(p)
+    index = 0
+    while index < len(reduce_in):
+        for i in range(NUM_WORKERS):
+            key = reduce_in[index][0]
+            val = reduce_in[index][1]
 
-    for p in processes:
-        p.join()
+            p = mp.Process(target=reduce_add, args=(q, (key, val)), daemon=True)
+            p.start()
+            processes.append(p)
+            index += 1
+        
+        for p in processes:
+            p.join()
 
     counts = []
     while not q.empty():
         counts.append(q.get())
 
-    # print(counts)
+    print(counts[:5])
+    
+    # Collect and print top 5 most frequent
+    sorted_counts = sorted(counts, key=lambda x: x[1], reverse=True)
+    r = sorted_counts[:5]
+    print(r)
 
-    getcount = operator.itemgetter(1)
-    sorted_counts = dict(sorted(counts, key=getcount, reverse=True))
-    print(sorted)
+    # Computation time
+    print(time.time() - start)
